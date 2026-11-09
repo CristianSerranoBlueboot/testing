@@ -35,7 +35,7 @@ users:
   - { nomina: L00003899, role: postulante, tipo: preparatoria }
   - { nomina: L00323246, role: postulante, tipo: preparatoria }
   - { nomina: L03514594, role: postulante, tipo: posgrado }
-  - { nomina: L00369652, role: representante, tipo: preparatoria }
+  - { nomina: L00369652, role: representante, tipo: preparatoria }  # también miembro de subcomité (158)
   - { nomina: L00571505, role: representante, tipo: preparatoria }
   - { nomina: L03089625, role: representante, tipo: preparatoria }
   - { nomina: L00579532, role: representante, tipo: posgrado }

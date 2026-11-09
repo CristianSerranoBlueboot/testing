@@ -8,6 +8,7 @@ export default defineConfig({
   outputDir: `test-results/${client}/${project}/${env}`,
   // browserless del cluster acepta 3 sesiones simultáneas y es compartido.
   workers: 2,
+  fullyParallel: true,
   timeout: 4 * 60 * 1000,
   retries: 0,
   reporter: [['list'], ['html', { open: 'never', outputFolder: `playwright-report/${client}/${project}/${env}` }]],

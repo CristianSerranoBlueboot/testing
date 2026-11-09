@@ -11,14 +11,31 @@ async function connect(): Promise<Browser> {
   return chromium.connectOverCDP(url, { headers: { Authorization: `Bearer ${token}` } });
 }
 
+/**
+ * Cierra los diálogos de `dismiss` (project.yaml) que estén abiertos. Algunos (encuestas)
+ * aparecen con demora: llamarla también después de cargar datos, antes de interactuar.
+ */
+export async function dismissDialogs(frame: Frame, waitMs = 3_000) {
+  for (const d of load().project.dismiss ?? []) {
+    const dialog = frame.locator('.sapMDialog', { hasText: d.text });
+    if (await dialog.isVisible({ timeout: waitMs }).catch(() => false)) {
+      await dialog.getByRole('button', { name: d.button }).click();
+      await dialog.waitFor({ state: 'hidden' });
+    }
+  }
+}
+
 type Fixtures = {
   /** Página con sesión iniciada con el usuario del rol pedido. */
   as: (role: string) => Promise<Page>;
+  /** Página con sesión iniciada con un usuario puntual (nómina de project.yaml). */
+  asUser: (nomina: string) => Promise<Page>;
   /**
    * Navega al intent de la app (clave de `apps` en project.yaml) y devuelve el frame donde
    * corre: Work Zone carga cada app en un iframe (`ui5appruntime.html`), no en la página.
+   * `hash` se agrega al intent (parámetros `?x=y` y/o ruta interna `&/ruta`).
    */
-  openApp: (page: Page, app: string) => Promise<Frame>;
+  openApp: (page: Page, app: string, hash?: string) => Promise<Frame>;
 };
 
 export const test = base.extend<Fixtures & { remote: Browser }>({
@@ -30,11 +47,18 @@ export const test = base.extend<Fixtures & { remote: Browser }>({
   as: async ({ remote }, use) => {
     await use(role => loggedPage(remote, userFor(role)));
   },
+  asUser: async ({ remote }, use) => {
+    await use(nomina => {
+      const user = load().project.users.find(u => u.nomina === nomina);
+      if (!user) throw new Error(`Usuario ${nomina} no definido en project.yaml`);
+      return loggedPage(remote, user);
+    });
+  },
   openApp: async ({}, use) => {
-    await use(async (page, app) => {
+    await use(async (page, app, hash = '') => {
       const intent = load().project.apps[app];
       if (!intent) throw new Error(`App "${app}" no definida en project.yaml`);
-      await page.goto(environment().url + '#' + intent);
+      await page.goto(environment().url + '#' + intent + hash);
       const handle = await page.waitForSelector('iframe[src*="ui5appruntime"]', { timeout: 60_000 });
       const frame = await handle.contentFrame();
       if (!frame) throw new Error(`No se encontró el iframe de la app "${app}"`);
@@ -47,12 +71,7 @@ export const test = base.extend<Fixtures & { remote: Browser }>({
           .some(e => e.offsetParent !== null);
         return own?.length > 0 && !busy;
       }, null, { timeout: 90_000 });
-      for (const d of load().project.dismiss ?? []) {
-        const dialog = frame.locator('.sapMDialog', { hasText: d.text });
-        if (await dialog.isVisible({ timeout: 3_000 }).catch(() => false)) {
-          await dialog.getByRole('button', { name: d.button }).click();
-        }
-      }
+      await dismissDialogs(frame);
       return frame;
     });
   },

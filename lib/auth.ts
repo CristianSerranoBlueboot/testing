@@ -39,7 +39,10 @@ async function loginSapId(page: Page, user: User) {
 export async function loggedPage(browser: Browser, user: User): Promise<Page> {
   const env = environment();
   const file = sessionFile(user);
-  const context = await browser.newContext(freshSession(file) ? { storageState: file } : {});
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    ...(freshSession(file) ? { storageState: file } : {}),
+  });
   const page = await context.newPage();
   await page.goto(env.url + '#Shell-home');
 
