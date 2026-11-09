@@ -1,0 +1,49 @@
+# Clasificación Docente (TEC). Las contraseñas no van acá: se leen del archivo
+# `secrets` (relativo a la raíz del repo) con la clave armada por `passwordKey`.
+name: Clasificación Docente
+secrets: ../TEC/.env
+passwordKey: CD_PWD_{nomina}
+
+environments:
+  qa:
+    url: https://clasificacion-docente-qa-1c8jsdrw.launchpad.cfapps.us10.hana.ondemand.com/site/web
+    login: tec-adfs
+  # prd: falta la URL del sitio Work Zone de PRD. Solo pruebas de lectura.
+
+# Intent de navegación del FLP (lo que va después de `#`).
+apps:
+  postulaciones: Postulaciones-display
+  missubcomites: missubcomites-display
+  missubcomisionesvi: missubcomisionesvi-display
+  comites: Comites-display
+  representantes: Representantes-display
+  convocatorias: Convocatorias-display
+  visitantes: Visitantes-display
+  administradores: Administradores-display
+  reglamentos: Reglamentos-display
+
+# Diálogos que se cierran al abrir cada app.
+dismiss:
+  - { text: Tu opinión nos importa, button: Cerrar }
+
+# El primer usuario de cada rol es el que usan los tests salvo `--user`.
+users:
+  - { nomina: L01472357, role: admin, tipo: preparatoria }
+  - { nomina: L00163550, role: admin, tipo: preparatoria }
+  - { nomina: L00389726, role: admin, tipo: posgrado }
+  - { nomina: L00556704, role: postulante, tipo: ambos }
+  - { nomina: L00003899, role: postulante, tipo: preparatoria }
+  - { nomina: L00323246, role: postulante, tipo: preparatoria }
+  - { nomina: L03514594, role: postulante, tipo: posgrado }
+  - { nomina: L00369652, role: representante, tipo: preparatoria }
+  - { nomina: L00571505, role: representante, tipo: preparatoria }
+  - { nomina: L03089625, role: representante, tipo: preparatoria }
+  - { nomina: L00579532, role: representante, tipo: posgrado }
+  - { nomina: L00000021, role: subcomite, tipo: posgrado }
+  - { nomina: L03141968, role: evaluador, tipo: posgrado }
+  - { nomina: L03121606, role: evaluador, tipo: posgrado }
+
+# Apps que debe mostrar el launchpad por rol (verificado en QA 2026-11-09).
+launchpad:
+  admin: [comites, representantes, convocatorias, visitantes, administradores, reglamentos, missubcomites, postulaciones, missubcomisionesvi]
+  postulante: [missubcomites, postulaciones, missubcomisionesvi]
