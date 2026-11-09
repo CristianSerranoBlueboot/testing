@@ -5,7 +5,10 @@ import { abrirPostulacion, boton, dialogo, estado } from './lib/postulacion';
 // Datos de QA (2026-11-09): postulaciones y relaciones leídas de la BD, no se modifican.
 //   9951  conv. cerrada, resultados publicados, clarificación respondida, comité evaluó (3)
 //         postulante L00556704, representante L00579532, coordinador/secretario L00000021
-//   9954  conv. cerrada, resultados publicados, respondida; miembro de subcomité L00369652
+//   9954  conv. cerrada, resultados publicados, respondida; miembro de subcomité L03089625,
+//         presidente (coordinador) L00369652, secretario L00571505, admin secundario L00163550
+//   9596  conv. cerrada, resultados publicados, solicitada; miembro de subcomité L00369652
+// Relaciones por usuario: tools/qa-roles.js.
 //   10008 conv. en curso, sin publicar, solicitada con plazo vencido (2026-10-05), comité evaluó (1)
 //         postulante L00556704, representante L00571505
 //   10014 conv. en curso, resultados publicados, solicitada en plazo (2027-11-12); postulante L00003899
@@ -21,7 +24,10 @@ const casos: Caso[] = [
   { titulo: 'CA1 postulante ve la respuesta con convocatoria cerrada', tags: '@postulante', nomina: 'L00556704', id: 9951, role: 'postulante', esperado: 'ver', soloLectura: true },
   { titulo: 'CA1 admin ve la respuesta con convocatoria cerrada', tags: '@admin', nomina: 'L01472357', id: 9951, admin: true, esperado: 'ver' },
   { titulo: 'CA1 coordinador/secretario ve la respuesta con convocatoria cerrada', tags: '@subcomite', nomina: 'L00000021', id: 9951, role: 'subcomite', esperado: 'ver' },
-  { titulo: 'CA1 miembro de subcomité ve la respuesta con convocatoria cerrada', tags: '@miembrosubcomite', nomina: 'L00369652', id: 9954, role: 'miembrosubcomite', esperado: 'ver' },
+  { titulo: 'CA1 miembro de subcomité ve la respuesta con convocatoria cerrada', tags: '@miembrosubcomite', nomina: 'L00369652', id: 9596, role: 'miembrosubcomite', esperado: 'ver' },
+  { titulo: 'CA1 admin secundario ve la respuesta con convocatoria cerrada', tags: '@adminsecundario', nomina: 'L00163550', id: 9954, admin: true, esperado: 'ver' },
+  { titulo: 'CA1 presidente de comité ve la respuesta con convocatoria cerrada', tags: '@subcomite @presidente', nomina: 'L00369652', id: 9954, role: 'subcomite', esperado: 'ver' },
+  { titulo: 'CA1 secretario de comité ve la respuesta con convocatoria cerrada', tags: '@subcomite @secretario', nomina: 'L00571505', id: 9954, role: 'subcomite', esperado: 'ver' },
   { titulo: 'CA2 sin clarificación no hay botón', tags: '@postulante', nomina: 'L00556704', id: 9934, role: 'postulante', esperado: 'oculto' },
   { titulo: 'RN4 postulante con plazo vencido: solo lectura', tags: '@postulante', nomina: 'L00556704', id: 10008, role: 'postulante', esperado: 'ver', soloLectura: true },
   { titulo: 'RN4 postulante con resultados publicados: solo lectura', tags: '@postulante', nomina: 'L00003899', id: 10014, role: 'postulante', esperado: 'ver', soloLectura: true },
